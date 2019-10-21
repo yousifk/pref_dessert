@@ -61,8 +61,8 @@ class PreferencesRepository<T> extends _InnerPreferencesRepository<T> {
     _update(prefs, index, t);
   }
 
-  List<T> remove(int index) {
-    return _remove(prefs, index);
+  void remove(int index) {
+    _remove(prefs, index);
   }
 
   void removeAll() {
@@ -110,8 +110,8 @@ class FuturePreferencesRepository<T> extends _InnerPreferencesRepository<T> {
     _update(await prefs, index, t);
   }
 
-  Future<List<T>> remove(int index) async {
-    return _remove(await prefs, index);
+  void remove(int index) async {
+    _remove(await prefs, index);
   }
 
   void removeAll() async {
@@ -181,22 +181,20 @@ class _InnerPreferencesRepository<T> {
     prefs.setStringList(_key, list);
   }
 
-  List<T> _remove(SharedPreferences prefs, int index) {
+  void _remove(SharedPreferences prefs, int index) {
     var list = prefs.getStringList(_key);
     list.removeAt(index);
-    return list.map((s) => desSer.deserialize(s)).toList();
+    prefs.setStringList(_key, list);
   }
 
   void _removeAll(SharedPreferences prefs) {
     prefs.remove(_key);
   }
 
-  void _removeWhere(SharedPreferences prefs, bool test(T element)){
+  void _removeWhere(SharedPreferences prefs, bool test(T element)) {
     var list = _findAll(prefs);
     list.removeWhere(test);
     // without this preferences are not persisted and lost after app restart
     prefs.setStringList(_key, list.map(desSer.serialize).toList());
   }
-
-
 }
