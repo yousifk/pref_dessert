@@ -183,6 +183,7 @@ class _InnerPreferencesRepository<T> {
 
   void _remove(SharedPreferences prefs, int index) {
     var list = prefs.getStringList(_key);
+    if(list!=null && index<=list.length)
     list.removeAt(index);
     prefs.setStringList(_key, list);
   }
